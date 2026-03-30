@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowSheet Designer</title>
+</head>
+<body>
+<link rel="stylesheet" href="src/styles.css">
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div id="logo">Flow<span>Sheet</span></div>
+
+  <button class="tb-btn" id="btn-delete" title="Delete selected (Del)">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3h8M5 3V2h2v1M4.5 3l.5 6M7.5 3l-.5 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    DELETE
+  </button>
+  <button class="tb-btn danger" id="btn-clear" title="Clear canvas">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    CLEAR
+  </button>
+
+  <button class="tb-btn" id="btn-snap" title="Toggle snap to grid (S)">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="2" cy="2" r="1" fill="currentColor"/><circle cx="6" cy="2" r="1" fill="currentColor"/><circle cx="10" cy="2" r="1" fill="currentColor"/><circle cx="2" cy="6" r="1" fill="currentColor"/><circle cx="6" cy="6" r="1" fill="currentColor"/><circle cx="10" cy="6" r="1" fill="currentColor"/><circle cx="2" cy="10" r="1" fill="currentColor"/><circle cx="6" cy="10" r="1" fill="currentColor"/><circle cx="10" cy="10" r="1" fill="currentColor"/></svg>
+    SNAP
+  </button>
+
+  <button class="tb-btn" id="btn-fit" title="Zoom to fit (F)">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    FIT
+  </button>
+
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-export">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v7M3 5l3 3 3-3M2 10h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    EXPORT JSON
+  </button>
+  <button class="tb-btn" id="btn-import">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 8V1M3 4l3-3 3 3M2 10h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    IMPORT JSON
+  </button>
+
+  <div class="tb-spacer"></div>
+  <div style="font-size:10px;color:var(--text3)">Del · delete &nbsp; Scroll · zoom &nbsp; E · rotate &nbsp; M · mirror &nbsp; F · fit &nbsp; S · snap</div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar" id="sidebar"></div>
+
+  <!-- CANVAS -->
+  <div id="canvas-wrap">
+  <div id="select-rect"></div>
+    <div id="canvas">
+      <svg id="connections-svg">
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" class="conn-arrow"/>
+          </marker>
+          <marker id="arrow-power" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--power-conn)"/>
+          </marker>
+        </defs>
+        <g id="connections-g"></g>
+        <line id="temp-conn" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.7"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- PROPS PANEL -->
+  <div id="props-panel">
+    <div class="props-header">Properties</div>
+    <div id="props-content">
+      <div class="props-empty">Select an element<br>to edit its properties</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div id="statusbar">
+  <span id="status-nodes">Nodes: 0</span>
+  <span id="status-conns">Connections: 0</span>
+  <span id="status-zoom">Zoom: 100%</span>
+  <span id="status-msg" style="margin-left:auto;color:var(--accent)"></span>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="modal-export" style="display:none">
+  <div class="modal">
+    <div class="modal-header">Export Flowsheet JSON <button class="modal-close" id="close-export">×</button></div>
+    <div class="modal-body">
+      <textarea class="json-area" id="export-ta" readonly></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="close-export2">Close</button>
+      <button class="btn-primary" id="copy-export">Copy to Clipboard</button>
+      <button class="btn-primary" id="download-export">Download .json</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="modal-import" style="display:none">
+  <div class="modal">
+    <div class="modal-header">Import Flowsheet JSON <button class="modal-close" id="close-import">×</button></div>
+    <div class="modal-body">
+      <textarea class="json-area" id="import-ta" placeholder='Paste JSON here or use "Load File"...'></textarea>
+    </div>
+    <div class="modal-footer">
+      <input type="file" id="import-file" accept=".json" style="display:none">
+      <button class="btn-secondary" id="close-import2">Cancel</button>
+      <button class="btn-secondary" id="load-file-btn">Load File…</button>
+      <button class="btn-primary" id="apply-import">Apply</button>
+    </div>
+  </div>
+</div>
+
+<script src="src/library.js"></script>
+</body>
+</html>
