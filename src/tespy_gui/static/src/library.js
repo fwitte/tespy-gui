@@ -1,474 +1,148 @@
 // ═══════════════════════════════════════════════════════
-// ELEMENT LIBRARY DEFINITIONS
+// COMPONENT AND CONNECTION DEFINITIONS (loaded from JSON)
 // ═══════════════════════════════════════════════════════
-const LIBRARY = [
-  {
-    category: 'Turbomachinery',
-    items: [
-      {
-        type: 'turbine',
-        label: 'Turbine',
-        w: 64, h: 64,
-        draw: (s) => turbineSVG(s, '#00d4aa'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0,    y: 0.5  },
-          { id: 'out', type: 'outlet', x: 1,    y: 0.5  },
-        ]
-      },
-      {
-        type: 'Compressor',
-        label: 'Compressor',
-        w: 64, h: 64,
-        draw: (s) => compressorSVG(s, '#0099ff'),
-        connectors: [
-          { id: 'in',    type: 'inlet',     x: 0,   y: 0.5 },
-          { id: 'out',   type: 'outlet',    x: 1,   y: 0.5 },
-          { id: 'power', type: 'power-in',  x: 0.5, y: 1   },
-        ]
-      },
-      {
-        type: 'pump',
-        label: 'Pump',
-        w: 60, h: 60,
-        draw: (s) => pumpSVG(s, '#b388ff'),
-        connectors: [
-          { id: 'in',    type: 'inlet',    x: 0,   y: 0.5 },
-          { id: 'out',   type: 'outlet',   x: 1,   y: 0.5 },
-          { id: 'power', type: 'power-in', x: 0.5, y: 1   },
-        ]
-      },
-      {
-        type: 'fan',
-        label: 'Fan',
-        w: 60, h: 60,
-        draw: (s) => fanSVG(s, '#80deea'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0,   y: 0.5 },
-          { id: 'out', type: 'outlet', x: 1,   y: 0.5 },
-        ]
-      },
-    ]
-  },
-  {
-    category: 'Heat Transfer',
-    items: [
-      {
-        type: 'HeatExchanger',
-        label: 'Heat Exchanger',
-        w: 80, h: 56,
-        draw: (s) => heatExchangerSVG(s, '#ff6b35'),
-        connectors: [
-          { id: 'shell_in',  type: 'inlet',  x: 0,   y: 0.3  },
-          { id: 'shell_out', type: 'outlet', x: 1,   y: 0.3  },
-          { id: 'tube_in',   type: 'inlet',  x: 1,   y: 0.7  },
-          { id: 'tube_out',  type: 'outlet', x: 0,   y: 0.7  },
-        ]
-      },
-      {
-        type: 'condenser',
-        label: 'Condenser',
-        w: 76, h: 52,
-        draw: (s) => condenserSVG(s, '#4dd0e1'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0.5, y: 0   },
-          { id: 'out', type: 'outlet', x: 0.5, y: 1   },
-        ]
-      },
-      {
-        type: 'evaporator',
-        label: 'Evaporator',
-        w: 76, h: 52,
-        draw: (s) => evaporatorSVG(s, '#ff8a65'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0.5, y: 1   },
-          { id: 'out', type: 'outlet', x: 0.5, y: 0   },
-        ]
-      },
-      {
-        type: 'heater',
-        label: 'Heater',
-        w: 60, h: 52,
-        draw: (s) => heaterSVG(s, '#ffca28'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0,   y: 0.5 },
-          { id: 'out', type: 'outlet', x: 1,   y: 0.5 },
-        ]
-      },
-      {
-        type: 'cooler',
-        label: 'Cooler',
-        w: 60, h: 52,
-        draw: (s) => coolerSVG(s, '#4fc3f7'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0,   y: 0.5 },
-          { id: 'out', type: 'outlet', x: 1,   y: 0.5 },
-        ]
-      },
-    ]
-  },
-  {
-    category: 'Vessels',
-    items: [
-      {
-        type: 'vessel',
-        label: 'Vessel',
-        w: 56, h: 80,
-        draw: (s) => vesselSVG(s, '#a5d6a7'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0.5, y: 0   },
-          { id: 'out', type: 'outlet', x: 0.5, y: 1   },
-        ]
-      },
-      {
-        type: 'separator',
-        label: 'Separator',
-        w: 72, h: 52,
-        draw: (s) => separatorSVG(s, '#ce93d8'),
-        connectors: [
-          { id: 'in',    type: 'inlet',  x: 0,   y: 0.5 },
-          { id: 'vap',   type: 'outlet', x: 0.5, y: 0   },
-          { id: 'liq',   type: 'outlet', x: 0.5, y: 1   },
-        ]
-      },
-      {
-        type: 'column',
-        label: 'Column',
-        w: 52, h: 100,
-        draw: (s) => columnSVG(s, '#ef9a9a'),
-        connectors: [
-          { id: 'feed',    type: 'inlet',  x: 0,   y: 0.5 },
-          { id: 'top',     type: 'outlet', x: 0.5, y: 0   },
-          { id: 'bottom',  type: 'outlet', x: 0.5, y: 1   },
-          { id: 'reboiler',type: 'inlet',  x: 1,   y: 0.8 },
-          { id: 'reflux',  type: 'inlet',  x: 1,   y: 0.2 },
-        ]
-      },
-      {
-        type: 'tank',
-        label: 'Tank',
-        w: 64, h: 64,
-        draw: (s) => tankSVG(s, '#80cbc4'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0.5, y: 0   },
-          { id: 'out', type: 'outlet', x: 0.5, y: 1   },
-        ]
-      },
-    ]
-  },
-  {
-    category: 'Utilities',
-    items: [
-      {
-        type: 'Valve',
-        label: 'Valve',
-        w: 52, h: 36,
-        draw: (s) => valveSVG(s, '#fff176'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0,   y: 0.5 },
-          { id: 'out', type: 'outlet', x: 1,   y: 0.5 },
-        ]
-      },
-      {
-        type: 'mixer',
-        label: 'Mixer',
-        w: 56, h: 56,
-        draw: (s) => mixerSVG(s, '#b0bec5'),
-        connectors: [
-          { id: 'in1', type: 'inlet',  x: 0,   y: 0.3 },
-          { id: 'in2', type: 'inlet',  x: 0,   y: 0.7 },
-          { id: 'out', type: 'outlet', x: 1,   y: 0.5 },
-        ]
-      },
-      {
-        type: 'splitter',
-        label: 'Splitter',
-        w: 56, h: 56,
-        draw: (s) => splitterSVG(s, '#f48fb1'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0,   y: 0.5 },
-          { id: 'out1',type: 'outlet', x: 1,   y: 0.3 },
-          { id: 'out2',type: 'outlet', x: 1,   y: 0.7 },
-        ]
-      },
-      {
-        type: 'Source',
-        label: 'Source',
-        w: 48, h: 48,
-        draw: (s) => sourceSVG(s, '#a5d6a7'),
-        connectors: [
-          { id: 'out', type: 'outlet', x: 1,   y: 0.5 },
-        ]
-      },
-      {
-        type: 'Sink',
-        label: 'Sink',
-        w: 48, h: 48,
-        draw: (s) => sinkSVG(s, '#ef9a9a'),
-        connectors: [
-          { id: 'in', type: 'inlet',  x: 0,   y: 0.5 },
-        ]
-      },
-    ]
-  },
-  {
-    category: 'Power',
-    items: [
-      {
-        type: 'Motor',
-        label: 'Motor',
-        w: 52, h: 52,
-        draw: (s) => motorSVG(s, '#ffc107'),
-        connectors: [
-          { id: 'power_in',  type: 'power-in',  x: 0,   y: 0.5 },
-          { id: 'power_out', type: 'power-out', x: 1,   y: 0.5 },
-        ]
-      },
-      {
-        type: 'PowerBus',
-        label: 'Power Bus',
-        w: 88, h: 60,
-        draw: (s) => powerBusSVG(s, '#ffc107'),
-        connectors: [],  // generated dynamically via varPorts
-        varPorts: { 'power-in': 1, 'power-out': 4 },
-      },
-      {
-        type: 'PowerSource',
-        label: 'Power Source',
-        w: 48, h: 48,
-        draw: (s) => powerSourceSVG(s, '#ffc107'),
-        connectors: [
-          { id: 'power', type: 'power-out', x: 1, y: 0.5 },
-        ]
-      },
-      {
-        type: 'CycleCloser',
-        label: 'Cycle Closer',
-        w: 36, h: 36,
-        draw: (s) => cycleCloserSVG(s, '#80cbc4'),
-        connectors: [
-          { id: 'in',  type: 'inlet',  x: 0, y: 0.5 },
-          { id: 'out', type: 'outlet', x: 1, y: 0.5 },
-        ]
-      },
-    ]
-  },
-];
+let COMPONENT_DEFS = {};
+let CONNECTION_DEFS = {};
 
-// ═══════════════════════════════════════════════════════
-// SVG DRAWING FUNCTIONS
-// ═══════════════════════════════════════════════════════
-function makeSVG(w, h, inner) {
-  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+function deriveCategory(modulePath) {
+  const seg = (modulePath || '').split('.')[2] || 'other';
+  return seg.split('_').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
 }
 
-function turbineSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2, r=Math.min(w,h)/2-4;
-  return makeSVG(w,h,`
-    <polygon points="${cx-r},${cy-r} ${cx+r},${cy-r/2} ${cx+r},${cy+r/2} ${cx-r},${cy+r}"
-      fill="none" stroke="${c}" stroke-width="2"/>
-    <line x1="${cx-r}" y1="${cy}" x2="${cx+r}" y2="${cy}" stroke="${c}" stroke-width="1" stroke-dasharray="3 2" opacity="0.4"/>
-    <text x="${cx}" y="${cy+3}" text-anchor="middle" fill="${c}" font-size="10" font-family="JetBrains Mono" font-weight="600">T</text>
-  `);
+function boxSVG(w, h, typeName) {
+  const words = typeName.replace(/([A-Z])/g, ' $1').trim().split(' ');
+  const lines = [];
+  let cur = '';
+  words.forEach(word => {
+    const next = cur ? cur + ' ' + word : word;
+    if (next.length > 10 && cur) { lines.push(cur); cur = word; }
+    else cur = next;
+  });
+  if (cur) lines.push(cur);
+  const lh = 10;
+  const ty = h / 2 - ((lines.length - 1) * lh) / 2;
+  const textRows = lines.map((l, i) =>
+    `<text x="${w/2}" y="${ty + i * lh}" text-anchor="middle" font-size="8" font-family="JetBrains Mono,monospace" fill="#8892a4">${l}</text>`
+  ).join('');
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="1" width="${w-2}" height="${h-2}" rx="4" fill="#1a1f2e" stroke="#4a5568" stroke-width="1.5"/>
+    ${textRows}
+  </svg>`;
 }
 
-function compressorSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2, r=Math.min(w,h)/2-4;
-  return makeSVG(w,h,`
-    <polygon points="${cx-r},${cy-r/2} ${cx+r},${cy-r} ${cx+r},${cy+r} ${cx-r},${cy+r/2}"
-      fill="none" stroke="${c}" stroke-width="2"/>
-    <text x="${cx}" y="${cy+3}" text-anchor="middle" fill="${c}" font-size="10" font-family="JetBrains Mono" font-weight="600">C</text>
-  `);
+// ── Port helpers ───────────────────────────────────────
+
+// Build the default portConfig for a new node from portDefs.
+// variable  → param: min count
+// conditional → param: first 'when' value encountered (deterministic)
+function defaultPortConfig(portDefs) {
+  const config = {};
+  const condSeen = {};
+  for (const pd of Object.values(portDefs || {})) {
+    if (!pd) continue;
+    if (pd.type === 'variable') {
+      if (config[pd.parameter] === undefined) config[pd.parameter] = pd.min;
+    } else if (pd.type === 'conditional') {
+      if (!condSeen[pd.parameter]) {
+        condSeen[pd.parameter] = true;
+        config[pd.parameter] = pd.when;  // default to first option
+      }
+    }
+  }
+  return config;
 }
 
-function pumpSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2, r=Math.min(w,h)/2-4;
-  return makeSVG(w,h,`
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c}" stroke-width="2"/>
-    <line x1="${cx}" y1="${cy-r+4}" x2="${cx}" y2="${cy+r-4}" stroke="${c}" stroke-width="1.5"/>
-    <polyline points="${cx-6},${cy-4} ${cx+6},${cy-4} ${cx},${cy+6}" fill="${c}" opacity="0.7"/>
-  `);
+// Compute the live connector list from portDefs + portConfig.
+function computeConnectors(portDefs, portConfig) {
+  const groups = [
+    ['inlets',      'inlet'],
+    ['outlets',     'outlet'],
+    ['powerinlets', 'power-in'],
+    ['poweroutlets','power-out'],
+  ];
+
+  const collected = { inlet: [], outlet: [], 'power-in': [], 'power-out': [] };
+
+  for (const [key, connType] of groups) {
+    const pd = portDefs[key];
+    if (!pd) continue;
+    let ids = [];
+    if (pd.type === 'fixed') {
+      ids = pd.ports || [];
+    } else if (pd.type === 'variable') {
+      const n = (portConfig && portConfig[pd.parameter] !== undefined)
+        ? portConfig[pd.parameter] : pd.min;
+      ids = Array.from({ length: n }, (_, i) => pd.pattern.replace('{n}', i + 1));
+    } else if (pd.type === 'conditional') {
+      const sel = portConfig && portConfig[pd.parameter];
+      ids = sel === pd.when ? (pd.ports || []) : [];
+    }
+    collected[connType].push(...ids);
+  }
+
+  const { inlet: ins, outlet: outs, 'power-in': pins, 'power-out': pouts } = collected;
+  const conns = [];
+  ins.forEach((id, i)   => conns.push({ id, type: 'inlet',     x: 0, y: (i + 1) / (ins.length   + 1) }));
+  outs.forEach((id, i)  => conns.push({ id, type: 'outlet',    x: 1, y: (i + 1) / (outs.length  + 1) }));
+  const tp = pins.length + pouts.length;
+  pins.forEach((id, i)  => conns.push({ id, type: 'power-in',  x: (i + 1) / (tp + 1), y: 1 }));
+  pouts.forEach((id, i) => conns.push({ id, type: 'power-out', x: (pins.length + i + 1) / (tp + 1), y: 1 }));
+  return conns;
 }
 
-function fanSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2, r=Math.min(w,h)/2-4;
-  return makeSVG(w,h,`
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c}" stroke-width="2"/>
-    <path d="M${cx},${cy} Q${cx+r-2},${cy-r+2} ${cx+r-4},${cy}" fill="${c}" opacity="0.6"/>
-    <path d="M${cx},${cy} Q${cx-r+2},${cy+r-2} ${cx-r+4},${cy}" fill="${c}" opacity="0.6"/>
-    <circle cx="${cx}" cy="${cy}" r="3" fill="${c}"/>
-  `);
+// Get the pixel dimensions of a node given its live portConfig.
+// Width is always 80; height depends on how many fluid rows are active.
+function getNodeDims(nodeData) {
+  const def = getItemDef(nodeData.type);
+  if (!def) return { w: 80, h: 60 };
+  const conns = getNodeConnectors(nodeData);
+  const fluidRows = Math.max(
+    conns.filter(c => c.type === 'inlet').length,
+    conns.filter(c => c.type === 'outlet').length,
+    1
+  );
+  return { w: def.w, h: Math.max(fluidRows * 20 + 20, 40) };
 }
 
-function heatExchangerSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <rect x="4" y="4" width="${w-8}" height="${h-8}" rx="4" fill="none" stroke="${c}" stroke-width="2"/>
-    ${[0,1,2,3,4].map(i=>`<line x1="4" y1="${8+i*(h-16)/4}" x2="${w-4}" y2="${8+i*(h-16)/4}" stroke="${c}" stroke-width="1" opacity="0.35"/>`).join('')}
-    <path d="M12,${h/2} Q${w/2},${h/2-10} ${w-12},${h/2}" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.5"/>
-  `);
+function buildComponentDef(typeName, compData) {
+  const portDefs = {
+    inlets:       compData.inlets       || { type: 'fixed', ports: [] },
+    outlets:      compData.outlets      || { type: 'fixed', ports: [] },
+    powerinlets:  compData.powerinlets  || { type: 'fixed', ports: [] },
+    poweroutlets: compData.poweroutlets || { type: 'fixed', ports: [] },
+  };
+  const defaultConns = computeConnectors(portDefs, defaultPortConfig(portDefs));
+  const fluidRows = Math.max(
+    defaultConns.filter(c => c.type === 'inlet').length,
+    defaultConns.filter(c => c.type === 'outlet').length,
+    1
+  );
+  const w = 80;
+  const h = Math.max(fluidRows * 20 + 20, 40);
+
+  return {
+    type: typeName,
+    label: typeName,
+    w, h,
+    draw: (s) => boxSVG(s.w, s.h, typeName),
+    portDefs,
+    parameters: compData.parameters || [],
+    module: compData.module || '',
+  };
 }
 
-function condenserSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <rect x="4" y="4" width="${w-8}" height="${h-8}" rx="6" fill="none" stroke="${c}" stroke-width="2"/>
-    ${[0,1,2].map(i=>`<line x1="${10+i*(w-20)/2}" y1="8" x2="${10+i*(w-20)/2}" y2="${h-8}" stroke="${c}" stroke-width="1" opacity="0.35"/>`).join('')}
-    <text x="${w/2}" y="${h/2+4}" text-anchor="middle" fill="${c}" font-size="9" font-family="JetBrains Mono">COND</text>
-  `);
+async function loadDefs() {
+  const [compJson, connJson] = await Promise.all([
+    fetch('/component.json').then(r => r.json()),
+    fetch('/connection.json').then(r => r.json()),
+  ]);
+  CONNECTION_DEFS = connJson;
+  Object.entries(compJson).forEach(([typeName, compData]) => {
+    COMPONENT_DEFS[typeName] = buildComponentDef(typeName, compData);
+  });
 }
 
-function evaporatorSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <rect x="4" y="4" width="${w-8}" height="${h-8}" rx="6" fill="none" stroke="${c}" stroke-width="2"/>
-    ${[0,1,2].map(i=>`<path d="M${12+i*(w-24)/2},${h-8} Q${16+i*(w-24)/2},${h/2} ${12+i*(w-24)/2},8" fill="none" stroke="${c}" stroke-width="1" opacity="0.4"/>`).join('')}
-    <text x="${w/2}" y="${h/2+4}" text-anchor="middle" fill="${c}" font-size="9" font-family="JetBrains Mono">EVAP</text>
-  `);
-}
 
-function heaterSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <rect x="4" y="4" width="${w-8}" height="${h-8}" rx="4" fill="none" stroke="${c}" stroke-width="2"/>
-    <path d="M12,${h/2+4} Q${w*0.3},${h/2-8} ${w/2},${h/2+4} Q${w*0.7},${h/2+14} ${w-12},${h/2+4}" fill="none" stroke="${c}" stroke-width="1.5" opacity="0.8"/>
-  `);
-}
-
-function coolerSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <rect x="4" y="4" width="${w-8}" height="${h-8}" rx="4" fill="none" stroke="${c}" stroke-width="2"/>
-    ${[-1,0,1].map(i=>`<line x1="${w/2+i*8}" y1="10" x2="${w/2+i*6}" y2="${h-10}" stroke="${c}" stroke-width="1.5" opacity="0.6"/>`).join('')}
-  `);
-}
-
-function vesselSVG(s, c) {
-  const {w,h} = s;
-  const rx=w/2-4;
-  return makeSVG(w,h,`
-    <rect x="${4}" y="${12}" width="${w-8}" height="${h-24}" fill="none" stroke="${c}" stroke-width="2"/>
-    <ellipse cx="${w/2}" cy="${12}" rx="${rx}" ry="${8}" fill="none" stroke="${c}" stroke-width="2"/>
-    <ellipse cx="${w/2}" cy="${h-12}" rx="${rx}" ry="${8}" fill="none" stroke="${c}" stroke-width="2"/>
-  `);
-}
-
-function separatorSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <rect x="4" y="4" width="${w-8}" height="${h-8}" rx="8" fill="none" stroke="${c}" stroke-width="2"/>
-    <line x1="4" y1="${h/2}" x2="${w-4}" y2="${h/2}" stroke="${c}" stroke-width="1" stroke-dasharray="3 2" opacity="0.5"/>
-    <circle cx="${w/2}" cy="${h*0.3}" r="4" fill="${c}" opacity="0.5"/>
-    <rect x="${w/2-8}" y="${h*0.6}" width="16" height="5" rx="2" fill="${c}" opacity="0.5"/>
-  `);
-}
-
-function columnSVG(s, c) {
-  const {w,h} = s;
-  const rx=w/2-4;
-  return makeSVG(w,h,`
-    <rect x="${4}" y="${14}" width="${w-8}" height="${h-28}" fill="none" stroke="${c}" stroke-width="2"/>
-    <ellipse cx="${w/2}" cy="${14}" rx="${rx}" ry="${9}" fill="none" stroke="${c}" stroke-width="2"/>
-    <ellipse cx="${w/2}" cy="${h-14}" rx="${rx}" ry="${9}" fill="none" stroke="${c}" stroke-width="2"/>
-    ${[1,2,3].map(i=>`<line x1="6" y1="${14+i*(h-28)/4}" x2="${w-6}" y2="${14+i*(h-28)/4}" stroke="${c}" stroke-width="1" opacity="0.3"/>`).join('')}
-  `);
-}
-
-function tankSVG(s, c) {
-  const {w,h} = s;
-  const rx=w/2-4, cy=h/2;
-  return makeSVG(w,h,`
-    <ellipse cx="${w/2}" cy="${8}" rx="${rx}" ry="${7}" fill="none" stroke="${c}" stroke-width="2"/>
-    <line x1="${4}" y1="${8}" x2="${4}" y2="${h-8}" stroke="${c}" stroke-width="2"/>
-    <line x1="${w-4}" y1="${8}" x2="${w-4}" y2="${h-8}" stroke="${c}" stroke-width="2"/>
-    <ellipse cx="${w/2}" cy="${h-8}" rx="${rx}" ry="${7}" fill="none" stroke="${c}" stroke-width="2"/>
-    <line x1="${4}" y1="${cy}" x2="${w-4}" y2="${cy}" stroke="${c}" stroke-width="1" stroke-dasharray="3 2" opacity="0.3"/>
-  `);
-}
-
-function valveSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2;
-  return makeSVG(w,h,`
-    <polygon points="${4},${4} ${w-4},${cy} ${4},${h-4}" fill="none" stroke="${c}" stroke-width="2"/>
-    <polygon points="${w-4},${4} ${4},${cy} ${w-4},${h-4}" fill="none" stroke="${c}" stroke-width="2"/>
-    <line x1="${cx}" y1="${cy}" x2="${cx}" y2="${4}" stroke="${c}" stroke-width="1.5"/>
-    <line x1="${cx-5}" y1="${4}" x2="${cx+5}" y2="${4}" stroke="${c}" stroke-width="1.5"/>
-  `);
-}
-
-function mixerSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2;
-  return makeSVG(w,h,`
-    <polygon points="${4},${4} ${w-4},${cy} ${4},${h-4}" fill="${c}" opacity="0.15" stroke="${c}" stroke-width="2"/>
-    <text x="${cx+4}" y="${cy+4}" text-anchor="middle" fill="${c}" font-size="11" font-family="JetBrains Mono">+</text>
-  `);
-}
-
-function splitterSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2;
-  return makeSVG(w,h,`
-    <polygon points="${w-4},${4} ${4},${cy} ${w-4},${h-4}" fill="${c}" opacity="0.15" stroke="${c}" stroke-width="2"/>
-    <text x="${cx-4}" y="${cy+4}" text-anchor="middle" fill="${c}" font-size="11" font-family="JetBrains Mono">÷</text>
-  `);
-}
-
-function sourceSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <circle cx="${w/2}" cy="${h/2}" r="${Math.min(w,h)/2-4}" fill="none" stroke="${c}" stroke-width="2"/>
-    <path d="M${w/2-8},${h/2} L${w/2+4},${h/2} M${w/2},${h/2-8} L${w/2},${h/2+8}" stroke="${c}" stroke-width="2" stroke-linecap="round"/>
-  `);
-}
-
-function sinkSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <circle cx="${w/2}" cy="${h/2}" r="${Math.min(w,h)/2-4}" fill="none" stroke="${c}" stroke-width="2"/>
-    <rect x="${w/2-8}" y="${h/2-8}" width="16" height="16" rx="3" fill="${c}" opacity="0.5"/>
-  `);
-}
-
-function motorSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2, r=Math.min(w,h)/2-4;
-  return makeSVG(w,h,`
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c}" stroke-width="2"/>
-    <text x="${cx}" y="${cy+4}" text-anchor="middle" fill="${c}" font-size="13" font-family="JetBrains Mono" font-weight="600">M</text>
-  `);
-}
-
-function powerBusSVG(s, c) {
-  const {w,h} = s;
-  return makeSVG(w,h,`
-    <rect x="4" y="8" width="${w-8}" height="${h-16}" rx="3" fill="none" stroke="${c}" stroke-width="2"/>
-    <line x1="${(w-8)*0.33+4}" y1="8" x2="${(w-8)*0.33+4}" y2="${h-8}" stroke="${c}" stroke-width="1" opacity="0.35"/>
-    <line x1="${(w-8)*0.66+4}" y1="8" x2="${(w-8)*0.66+4}" y2="${h-8}" stroke="${c}" stroke-width="1" opacity="0.35"/>
-    <text x="${w/2}" y="${h/2+4}" text-anchor="middle" fill="${c}" font-size="8" font-family="JetBrains Mono" opacity="0.8">BUS</text>
-  `);
-}
-
-function powerSourceSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2, r=Math.min(w,h)/2-4;
-  return makeSVG(w,h,`
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c}" stroke-width="2"/>
-    <path d="M${cx+3},${cy-9} L${cx-4},${cy+1} L${cx+2},${cy+1} L${cx-3},${cy+9} L${cx+5},${cy-1} L${cx-1},${cy-1} Z" fill="${c}"/>
-  `);
-}
-
-function cycleCloserSVG(s, c) {
-  const {w,h} = s;
-  const cx=w/2, cy=h/2;
-  return makeSVG(w,h,`
-    <polygon points="${cx},${4} ${w-4},${cy} ${cx},${h-4} ${4},${cy}" fill="none" stroke="${c}" stroke-width="2"/>
-  `);
-}
 
 // ═══════════════════════════════════════════════════════
 // APP STATE
@@ -513,12 +187,13 @@ function takeSnapshot() {
       x: n.x, y: n.y, props: JSON.parse(JSON.stringify(n.props)),
       rotation: n.rotation || 0,
       mirror: n.mirror || false,
-      varPorts: n.varPorts ? JSON.parse(JSON.stringify(n.varPorts)) : null,
+      portConfig: JSON.parse(JSON.stringify(n.portConfig || {})),
     })),
     connections: state.connections.map(c => ({
       id: c.id,
       label: c.label || c.id,
       connClass: c.connClass || 'fluid',
+      props: JSON.parse(JSON.stringify(c.props || {})),
       from: { nodeId: c.from.nodeId, connId: c.from.connId },
       to:   { nodeId: c.to.nodeId,   connId: c.to.connId },
     })),
@@ -548,10 +223,12 @@ function restoreSnapshot(snap) {
   state.nextId = 1;
   // Rebuild
   (snap.nodes || []).forEach(n => {
-    addNode(n.type, n.x, n.y, { id: n.id, label: n.label, props: n.props || {}, rotation: n.rotation || 0, mirror: n.mirror || false, varPorts: n.varPorts || null });
+    addNode(n.type, n.x, n.y, { id: n.id, label: n.label, props: n.props || {}, rotation: n.rotation || 0, mirror: n.mirror || false, portConfig: n.portConfig || null });
   });
   (snap.connections || []).forEach(c => {
     addConnection(c.from.nodeId, c.from.connId, c.to.nodeId, c.to.connId, c.id, c.label);
+    const conn = state.connections.find(x => x.id === c.id);
+    if (conn && c.props) conn.props = JSON.parse(JSON.stringify(c.props));
   });
   state.nextId = snap._nextId;
   state.connPts = snap._connPts ? JSON.parse(JSON.stringify(snap._connPts)) : {};
@@ -578,13 +255,23 @@ function redo() {
 // ═══════════════════════════════════════════════════════
 function buildSidebar() {
   const sb = document.getElementById('sidebar');
-  LIBRARY.forEach(cat => {
+  sb.innerHTML = '';
+
+  // Group by category derived from module path
+  const categories = {};
+  Object.values(COMPONENT_DEFS).forEach(def => {
+    const cat = deriveCategory(def.module);
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(def);
+  });
+
+  Object.entries(categories).sort((a, b) => a[0].localeCompare(b[0])).forEach(([cat, items]) => {
     const title = document.createElement('div');
     title.className = 'lib-section-title';
-    title.textContent = cat.category;
+    title.textContent = cat;
     sb.appendChild(title);
 
-    cat.items.forEach(item => {
+    items.forEach(item => {
       const el = document.createElement('div');
       el.className = 'lib-item';
       el.draggable = true;
@@ -592,7 +279,7 @@ function buildSidebar() {
 
       const iconDiv = document.createElement('div');
       iconDiv.className = 'lib-icon';
-      iconDiv.innerHTML = item.draw({ w: item.w > 70 ? 36 : 32, h: item.h > 70 ? 32 : 28 });
+      iconDiv.innerHTML = item.draw({ w: 32, h: 28 });
 
       const label = document.createElement('div');
       label.className = 'lib-label';
@@ -733,7 +420,7 @@ canvasWrap.addEventListener('drop', e => {
   if (!def) return;
   const rect = canvasWrap.getBoundingClientRect();
   const rx = (e.clientX - rect.left - state.pan.x) / state.zoom - def.w / 2;
-  const ry = (e.clientY - rect.top  - state.pan.y) / state.zoom - def.h / 2;
+  const ry = (e.clientY - rect.top  - state.pan.y) / state.zoom - def.h / 2;  // def.h = default height
   const { x, y } = snapXY(rx, ry);
   addNode(type, x, y);
   pushHistory();
@@ -743,40 +430,14 @@ canvasWrap.addEventListener('drop', e => {
 // NODE MANAGEMENT
 // ═══════════════════════════════════════════════════════
 function getItemDef(type) {
-  for (const cat of LIBRARY) for (const item of cat.items) if (item.type === type) return item;
-  return null;
+  return COMPONENT_DEFS[type] || null;
 }
 
-// Build connector list for a node, merging def base connectors with varPorts overrides
-function buildVarConnectors(def, varPorts) {
-  const result = [];
-  // Gather all port types present in varPorts
-  const portTypes = Object.keys(varPorts);
-  // Group base connectors by type for positioning reference
-  portTypes.forEach(ptype => {
-    const count = varPorts[ptype];
-    const side = (ptype === 'power-in') ? 'left' : 'right';
-    const x = side === 'left' ? 0 : 1;
-    for (let i = 0; i < count; i++) {
-      const y = count === 1 ? 0.5 : (i + 1) / (count + 1);
-      const idx = i + 1;
-      const id = ptype === 'power-in' ? `power_in${idx}` : `power_out${idx}`;
-      result.push({ id, type: ptype, x, y });
-    }
-  });
-  // Append any fixed connectors from def that are not variable types
-  def.connectors.forEach(c => {
-    if (!portTypes.includes(c.type)) result.push(c);
-  });
-  return result;
-}
-
-// Returns the effective connector list for a node instance
+// Returns the live connector list for a node based on its portConfig
 function getNodeConnectors(nodeData) {
   const def = getItemDef(nodeData.type);
   if (!def) return [];
-  if (nodeData.varPorts) return buildVarConnectors(def, nodeData.varPorts);
-  return def.connectors;
+  return computeConnectors(def.portDefs, nodeData.portConfig || {});
 }
 
 function genId() { return 'n' + (state.nextId++); }
@@ -799,9 +460,11 @@ function addNode(type, x, y, overrides = {}) {
     props: overrides.props || {},
     rotation: overrides.rotation || 0,
     mirror: overrides.mirror || false,
-    varPorts: overrides.varPorts || (def.varPorts ? JSON.parse(JSON.stringify(def.varPorts)) : null),
+    portConfig: overrides.portConfig != null ? overrides.portConfig : defaultPortConfig(def.portDefs || {}),
   };
   state.nodes[id] = nodeData;
+
+  const { w: dw, h: dh } = getNodeDims(nodeData);
 
   const el = document.createElement('div');
   el.className = 'node';
@@ -811,14 +474,14 @@ function addNode(type, x, y, overrides = {}) {
 
   const body = document.createElement('div');
   body.className = 'node-body';
-  body.style.width  = def.w + 'px';
-  body.style.height = def.h + 'px';
+  body.style.width  = dw + 'px';
+  body.style.height = dh + 'px';
 
   const svgWrap = document.createElement('div');
   svgWrap.className = 'node-svg';
-  svgWrap.style.width  = def.w + 'px';
-  svgWrap.style.height = def.h + 'px';
-  svgWrap.innerHTML = def.draw({ w: def.w, h: def.h });
+  svgWrap.style.width  = dw + 'px';
+  svgWrap.style.height = dh + 'px';
+  svgWrap.innerHTML = def.draw({ w: dw, h: dh });
   body.appendChild(svgWrap);
 
   const lbl = document.createElement('div');
@@ -835,8 +498,8 @@ function addNode(type, x, y, overrides = {}) {
     dot.dataset.nodeId = id;
     dot.dataset.connId = conn.id;
     dot.dataset.connType = conn.type;
-    dot.style.left = (conn.x * def.w) + 'px';
-    dot.style.top  = (conn.y * def.h) + 'px';
+    dot.style.left = (conn.x * dw) + 'px';
+    dot.style.top  = (conn.y * dh) + 'px';
     dot.title = `${conn.type}: ${conn.id}`;
     body.appendChild(dot);
   });
@@ -872,10 +535,11 @@ function removeNode(id) {
 function applyRotation(nodeId) {
   const nodeData = state.nodes[nodeId];
   const def = getItemDef(nodeData.type);
+  const { w: dw, h: dh } = getNodeDims(nodeData);
   const R = nodeData.rotation || 0;
   const steps = ((R / 90) % 4 + 4) % 4;
-  const ew = steps % 2 === 0 ? def.w : def.h;
-  const eh = steps % 2 === 0 ? def.h : def.w;
+  const ew = steps % 2 === 0 ? dw : dh;
+  const eh = steps % 2 === 0 ? dh : dw;
 
   const el = document.getElementById('node-' + nodeId);
   if (!el) return;
@@ -885,16 +549,19 @@ function applyRotation(nodeId) {
   body.style.width  = ew + 'px';
   body.style.height = eh + 'px';
 
-  svgWrap.style.left = ((ew - def.w) / 2) + 'px';
-  svgWrap.style.top  = ((eh - def.h) / 2) + 'px';
+  svgWrap.style.width  = dw + 'px';
+  svgWrap.style.height = dh + 'px';
+  svgWrap.style.left = ((ew - dw) / 2) + 'px';
+  svgWrap.style.top  = ((eh - dh) / 2) + 'px';
+  svgWrap.innerHTML = def.draw({ w: dw, h: dh });
   const mirrorScale = nodeData.mirror ? ' scaleX(-1)' : '';
   svgWrap.style.transform = 'rotate(' + R + 'deg)' + mirrorScale;
 
   getNodeConnectors(nodeData).forEach(conn => {
     const dot = body.querySelector(`.connector[data-conn-id="${conn.id}"]`);
     if (!dot) return;
-    let rx = conn.x * def.w - def.w / 2;
-    let ry = conn.y * def.h - def.h / 2;
+    let rx = conn.x * dw - dw / 2;
+    let ry = conn.y * dh - dh / 2;
     if (nodeData.mirror) rx = -rx;
     for (let i = 0; i < steps; i++) { [rx, ry] = [-ry, rx]; }
     dot.style.left = (rx + ew / 2) + 'px';
@@ -904,8 +571,7 @@ function applyRotation(nodeId) {
 
 function rebuildNodePorts(nodeId) {
   const nodeData = state.nodes[nodeId];
-  if (!nodeData.varPorts) return;
-  // Remove connections on ports that no longer exist
+  // Remove connections whose ports no longer exist
   const validIds = new Set(getNodeConnectors(nodeData).map(c => c.id));
   state.connections = state.connections.filter(c => {
     const stale = (c.from.nodeId === nodeId && !validIds.has(c.from.connId)) ||
@@ -913,10 +579,9 @@ function rebuildNodePorts(nodeId) {
     if (stale) { delete state.connPts[c.id]; document.getElementById('conn-g-' + c.id)?.remove(); }
     return !stale;
   });
-  // Remove all existing connector dots from the body
+  // Clear and re-add connector dots
   const body = document.querySelector(`#node-${nodeId} .node-body`);
   body.querySelectorAll('.connector').forEach(d => d.remove());
-  // Re-add dots
   getNodeConnectors(nodeData).forEach(conn => {
     const dot = document.createElement('div');
     dot.className = 'connector ' + conn.type;
@@ -926,6 +591,10 @@ function rebuildNodePorts(nodeId) {
     dot.title = `${conn.type}: ${conn.id}`;
     body.appendChild(dot);
   });
+  // Clear routed waypoints for affected connections
+  state.connections.forEach(c => {
+    if (c.from.nodeId === nodeId || c.to.nodeId === nodeId) delete state.connPts[c.id];
+  });
   applyRotation(nodeId);
   redrawConnections();
   updateStatus();
@@ -933,15 +602,15 @@ function rebuildNodePorts(nodeId) {
 
 function rotateNode(id) {
   const nodeData = state.nodes[id];
-  const def = getItemDef(nodeData.type);
   const R = nodeData.rotation || 0;
+  const { w: dw, h: dh } = getNodeDims(nodeData);
   const steps = ((R / 90) % 4 + 4) % 4;
-  const ew_old = steps % 2 === 0 ? def.w : def.h;
-  const eh_old = steps % 2 === 0 ? def.h : def.w;
+  const ew_old = steps % 2 === 0 ? dw : dh;
+  const eh_old = steps % 2 === 0 ? dh : dw;
   nodeData.rotation = (R + 90) % 360;
   const steps_new = (nodeData.rotation / 90) % 4;
-  const ew_new = steps_new % 2 === 0 ? def.w : def.h;
-  const eh_new = steps_new % 2 === 0 ? def.h : def.w;
+  const ew_new = steps_new % 2 === 0 ? dw : dh;
+  const eh_new = steps_new % 2 === 0 ? dh : dw;
   // Keep visual center fixed
   nodeData.x += (ew_old - ew_new) / 2;
   nodeData.y += (eh_old - eh_new) / 2;
@@ -1080,14 +749,14 @@ function updatePropsForSelection() {
 // ═══════════════════════════════════════════════════════
 function getConnectorPos(nodeId, connId) {
   const nodeData = state.nodes[nodeId];
-  const def = getItemDef(nodeData.type);
   const conn = getNodeConnectors(nodeData).find(c => c.id === connId);
   if (!conn) return null;
+  const { w: dw, h: dh } = getNodeDims(nodeData);
   const steps = (((nodeData.rotation || 0) / 90) % 4 + 4) % 4;
-  const ew = steps % 2 === 0 ? def.w : def.h;
-  const eh = steps % 2 === 0 ? def.h : def.w;
-  let rx = conn.x * def.w - def.w / 2;
-  let ry = conn.y * def.h - def.h / 2;
+  const ew = steps % 2 === 0 ? dw : dh;
+  const eh = steps % 2 === 0 ? dh : dw;
+  let rx = conn.x * dw - dw / 2;
+  let ry = conn.y * dh - dh / 2;
   if (nodeData.mirror) rx = -rx;
   for (let i = 0; i < steps; i++) { [rx, ry] = [-ry, rx]; }
   return {
@@ -1499,10 +1168,10 @@ function buildPathD(pts, hops) {
 function getNodeBounds(nodeId) {
   const nd = state.nodes[nodeId];
   if (!nd) return null;
-  const def = getItemDef(nd.type);
+  const { w: dw, h: dh } = getNodeDims(nd);
   const steps = ((nd.rotation || 0) / 90 + 4) % 4;
-  const ew = steps % 2 === 0 ? def.w : def.h;
-  const eh = steps % 2 === 0 ? def.h : def.w;
+  const ew = steps % 2 === 0 ? dw : dh;
+  const eh = steps % 2 === 0 ? dh : dw;
   return { x: nd.x, y: nd.y, w: ew, h: eh };
 }
 
@@ -1644,6 +1313,49 @@ function showNodeProps(id) {
   const def = getItemDef(node.type);
   const pc = document.getElementById('props-content');
 
+  const connectorColors = { inlet: 'var(--accent2)', outlet: 'var(--accent3)', 'power-in': 'var(--power-in)', 'power-out': 'var(--power-out)' };
+  const editableParamTypes = ['ComponentProperty', 'SimpleDataContainer'];
+  const params = (def && def.parameters || []).filter(p => editableParamTypes.includes(p.container_type));
+
+  // ── Build port config UI descriptors ──────────────────
+  // variable ports: collect unique parameter names with their min
+  const varPorts = {};   // paramName → { min, labels: [portGroupKey,...] }
+  // conditional ports: collect parameter names with list of 'when' options
+  const condPorts = {};  // paramName → ['inlet'|'outlet'|...]
+  for (const [key, pd] of Object.entries(def ? def.portDefs : {})) {
+    if (!pd) continue;
+    if (pd.type === 'variable') {
+      if (!varPorts[pd.parameter]) varPorts[pd.parameter] = { min: pd.min, keys: [] };
+      varPorts[pd.parameter].keys.push(key);
+    } else if (pd.type === 'conditional') {
+      if (!condPorts[pd.parameter]) condPorts[pd.parameter] = [];
+      condPorts[pd.parameter].push(pd.when);
+    }
+  }
+  const portConfig = node.portConfig || {};
+
+  const varPortsHtml = Object.entries(varPorts).map(([param, info]) => `
+    <div class="prop-row" title="Number of ${info.keys.join('/')}">
+      <div class="prop-label" style="color:var(--accent2)">${param}</div>
+      <input class="prop-input" id="varport-${param}" type="number" min="${info.min}" value="${portConfig[param] ?? info.min}" style="width:56px">
+    </div>`).join('');
+
+  const condPortsHtml = Object.entries(condPorts).map(([param, options]) => `
+    <div class="prop-row" style="flex-direction:column;align-items:flex-start;gap:4px;padding:4px 0">
+      <div class="prop-label" style="color:var(--power-in)">${param}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;padding:0 4px">
+        <label style="display:flex;align-items:center;gap:4px;font-size:10px;cursor:pointer">
+          <input type="radio" name="cond-${param}" value="__none__" ${!portConfig[param] || portConfig[param] === '__none__' ? 'checked' : ''}> none
+        </label>
+        ${options.map(opt => `
+        <label style="display:flex;align-items:center;gap:4px;font-size:10px;cursor:pointer">
+          <input type="radio" name="cond-${param}" value="${opt}" ${portConfig[param] === opt ? 'checked' : ''}> ${opt}
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+
+  const hasPortConfig = varPortsHtml || condPortsHtml;
+
   pc.innerHTML = `
     <div class="prop-row">
       <div class="prop-label">ID</div>
@@ -1673,17 +1385,20 @@ function showNodeProps(id) {
       <button class="btn-secondary" id="rotate-node-btn" style="width:48%;font-size:10px">↻ Rotate 90°</button>
       <button class="btn-secondary" id="mirror-node-btn" style="width:48%;font-size:10px;margin-left:4%">↔ Mirror</button>
     </div>
+    ${hasPortConfig ? `
+    <div style="padding:8px 12px 4px;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;border-top:1px solid var(--border);margin-top:8px">Ports</div>
+    <div style="padding:0 12px">${varPortsHtml}${condPortsHtml}</div>` : ''}
+    ${params.length ? `
+    <div style="padding:8px 12px 4px;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;border-top:1px solid var(--border);margin-top:8px">Parameters</div>
+    ${params.map(p => `
+      <div class="prop-row" title="${p.description || ''}">
+        <div class="prop-label">${p.name}${p.quantity ? ' <span style="opacity:0.5;font-size:9px">[${p.quantity}]</span>' : ''}</div>
+        <input class="prop-input" id="param-${p.name}" type="number" value="${node.props[p.name] !== undefined ? node.props[p.name] : ''}" placeholder="–" style="width:72px">
+      </div>`).join('')}` : ''}
     <div style="padding:8px 12px 4px;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;border-top:1px solid var(--border);margin-top:8px">Connectors</div>
-    ${node.varPorts ? Object.entries(node.varPorts).map(([ptype, count]) => `
-      <div class="prop-row">
-        <div class="prop-label" style="color:${ptype==='power-in'?'var(--power-in)':'var(--power-out)'}">${ptype}</div>
-        <input class="prop-input" type="number" min="1" max="16" value="${count}" id="varport-${ptype.replace('-','_')}" style="width:56px">
-      </div>`).join('') : ''}
     ${getNodeConnectors(state.nodes[id]).map(c => `
       <div class="prop-row">
-        <div class="prop-label" style="color:${
-          c.type==='inlet'?'var(--accent2)':c.type==='outlet'?'var(--accent3)':c.type==='power-in'?'var(--power-in)':'var(--power-out)'
-        }">${c.id} (${c.type})</div>
+        <div class="prop-label" style="color:${connectorColors[c.type] || 'inherit'}">${c.id} <span style="opacity:0.5">(${c.type})</span></div>
       </div>`).join('')}
   `;
 
@@ -1719,23 +1434,52 @@ function showNodeProps(id) {
     mirrorNode(id);
     pushHistory();
   });
-  if (node.varPorts) {
-    Object.keys(node.varPorts).forEach(portType => {
-      const inputId = 'varport-' + portType.replace('-', '_');
-      document.getElementById(inputId)?.addEventListener('change', e => {
-        const count = Math.max(1, Math.min(16, parseInt(e.target.value) || 1));
-        e.target.value = count;
-        node.varPorts[portType] = count;
+
+  // Variable port inputs
+  Object.keys(varPorts).forEach(param => {
+    document.getElementById(`varport-${param}`)?.addEventListener('change', e => {
+      const val = Math.max(varPorts[param].min, parseInt(e.target.value) || varPorts[param].min);
+      e.target.value = val;
+      node.portConfig[param] = val;
+      rebuildNodePorts(id);
+      showNodeProps(id);
+      pushHistory();
+    });
+  });
+
+  // Conditional port radio buttons
+  Object.keys(condPorts).forEach(param => {
+    pc.querySelectorAll(`input[name="cond-${param}"]`).forEach(radio => {
+      radio.addEventListener('change', e => {
+        const val = e.target.value;
+        node.portConfig[param] = val === '__none__' ? null : val;
         rebuildNodePorts(id);
-        showNodeProps(id); // refresh connector list
+        showNodeProps(id);
         pushHistory();
       });
     });
-  }
+  });
+
+  params.forEach(p => {
+    document.getElementById(`param-${p.name}`)?.addEventListener('change', e => {
+      const raw = e.target.value.trim();
+      if (raw === '') delete node.props[p.name];
+      else node.props[p.name] = parseFloat(raw);
+      pushHistory();
+    });
+  });
 }
 
 function showConnProps(connData) {
   const pc = document.getElementById('props-content');
+
+  // Pick parameter list from connection.json based on fluid vs power connection
+  const connDefKey = connData.connClass === 'power' ? 'PowerConnection' : 'Connection';
+  const connParams = (CONNECTION_DEFS[connDefKey] && CONNECTION_DEFS[connDefKey].parameters || [])
+    .filter(p => p.container_type === 'FluidProperties');
+
+  if (!connData.props) connData.props = {};
+
   pc.innerHTML = `
     <div class="prop-row">
       <div class="prop-label">Label</div>
@@ -1753,10 +1497,18 @@ function showConnProps(connData) {
       <div class="prop-label">To</div>
       <input class="prop-input" value="${connData.to.nodeId} · ${connData.to.connId}" readonly style="opacity:0.5;cursor:default">
     </div>
+    ${connParams.length ? `
+    <div style="padding:8px 12px 4px;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;border-top:1px solid var(--border);margin-top:8px">Parameters</div>
+    ${connParams.map(p => `
+      <div class="prop-row" title="${p.description || ''}">
+        <div class="prop-label">${p.name}${p.quantity ? ' <span style="opacity:0.5;font-size:9px">[${p.quantity}]</span>' : ''}</div>
+        <input class="prop-input" id="conn-param-${p.name}" type="number" value="${connData.props[p.name] !== undefined ? connData.props[p.name] : ''}" placeholder="–" style="width:72px">
+      </div>`).join('')}` : ''}
     <div style="padding:8px 12px">
       <button class="btn-secondary" id="del-conn-btn" style="width:100%;font-size:10px;color:#ff6b6b;border-color:#ff6b6b44">Delete Connection</button>
     </div>
   `;
+
   const labelInput = document.getElementById('conn-label-input');
   labelInput.addEventListener('input', e => {
     const val = e.target.value.trim();
@@ -1765,6 +1517,14 @@ function showConnProps(connData) {
     if (!duplicate && val !== '') connData.label = val;
   });
   labelInput.addEventListener('change', () => { pushHistory(); });
+  connParams.forEach(p => {
+    document.getElementById(`conn-param-${p.name}`)?.addEventListener('change', e => {
+      const raw = e.target.value.trim();
+      if (raw === '') delete connData.props[p.name];
+      else connData.props[p.name] = parseFloat(raw);
+      pushHistory();
+    });
+  });
   document.getElementById('del-conn-btn').addEventListener('click', () => { removeConnection(connData.id); pushHistory(); });
 }
 
@@ -2002,7 +1762,7 @@ function exportJSON() {
       y: Math.round(n.y),
       props: n.props,
       rotation: n.rotation || 0,
-      varPorts: n.varPorts || undefined,
+      portConfig: n.portConfig || undefined,
     })),
     connections: state.connections.map(c => ({
       id: c.id,
@@ -2055,6 +1815,7 @@ function exportTESPy() {
       target:    toNode.label,
       source_id: fromMap[c.from.connId] || c.from.connId,
       target_id: toMap[c.to.connId]     || c.to.connId,
+      ...(c.props && Object.keys(c.props).length ? c.props : {}),
     };
     const key = c.label || c.id;
     if (c.connClass === 'power') PowerConns[key] = entry;
@@ -2079,12 +1840,14 @@ function importJSON(json) {
 
   // Add nodes
   (json.nodes || []).forEach(n => {
-    addNode(n.type, n.x, n.y, { id: n.id, label: n.label, props: n.props || {}, rotation: n.rotation || 0, mirror: n.mirror || false, varPorts: n.varPorts || null });
+    addNode(n.type, n.x, n.y, { id: n.id, label: n.label, props: n.props || {}, rotation: n.rotation || 0, mirror: n.mirror || false, portConfig: n.portConfig || null });
   });
 
   // Add connections
   (json.connections || []).forEach(c => {
     addConnection(c.from.nodeId, c.from.connId, c.to.nodeId, c.to.connId, c.id, c.label);
+    const conn = state.connections.find(x => x.id === c.id);
+    if (conn && c.props) conn.props = JSON.parse(JSON.stringify(c.props));
   });
 
   updateStatus();
@@ -2116,46 +1879,14 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // ═══════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════
-buildSidebar();
 applyTransform();
 updateStatus();
 
-// Demo: add a small example flowsheet
-setTimeout(() => {
-  const co2  = addNode('Compressor',     500, 150);
-  const hx2  = addNode('HeatExchanger', 300,  50);
-  const va2  = addNode('Valve',          100, 150);
-  const cc2  = addNode('CycleCloser',   450, 250);
-  const so2  = addNode('Source',         100,   0);
-  const si2  = addNode('Sink',           500,   0);
-
-  const ihx  = addNode('HeatExchanger', 300, 250);
-
-  const co1  = addNode('Compressor',     500, 350);
-  const hx1  = addNode('HeatExchanger', 300, 450);
-  const va1  = addNode('Valve',          100, 350);
-  const cc1  = addNode('CycleCloser',   450, 450);
-  const so1  = addNode('Source',         500, 500);
-  const si1  = addNode('Sink',           100, 500);
-
-  // Upper cycle (cycle 2)
-  addConnection(so2,  'out',       hx2,  'tube_in');
-  addConnection(hx2,  'tube_out',  si2,  'in');
-
-  addConnection(hx1, 'shell_out', cc1, 'in');
-  addConnection(cc1, 'out', co1, 'in');
-  addConnection(co1, 'out', ihx, 'shell_in');
-  addConnection(ihx, 'shell_out', va1, 'in');
-  addConnection(va1, 'out', hx1, 'shell_in');
-
-  addConnection(ihx, 'tube_out', cc2, 'in');
-  addConnection(cc2, 'out', co2, 'in');
-  addConnection(co2, 'out', hx2, 'shell_in');
-  addConnection(hx2, 'shell_out', va2, 'in');
-  addConnection(va2, 'out', ihx, 'tube_in');
-
-  addConnection(so1,  'out',       hx1,  'tube_in');
-  addConnection(hx1,  'tube_out',  si1,  'in');
-
-  pushHistory(); // initial state
-}, 100);
+loadDefs().then(() => {
+  buildSidebar();
+  pushHistory();
+}).catch(err => {
+  console.error('Failed to load component/connection definitions:', err);
+  document.getElementById('sidebar').innerHTML =
+    `<div style="padding:12px;color:#ff6b6b;font-size:11px">Failed to load definitions:<br>${err.message}<br><br>Serve via HTTP, not file://</div>`;
+});
