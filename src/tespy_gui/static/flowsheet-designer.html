@@ -41,6 +41,12 @@
     IMPORT JSON
   </button>
 
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-run" style="color:var(--accent2);border-color:var(--accent2)44">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 2l7 4-7 4V2z" fill="currentColor"/></svg>
+    RUN
+  </button>
+
   <div class="tb-spacer"></div>
   <div style="font-size:10px;color:var(--text3)">Del · delete &nbsp; Scroll · zoom &nbsp; E · rotate &nbsp; M · mirror &nbsp; F · fit &nbsp; S · snap</div>
 </div>
@@ -78,6 +84,17 @@
     </div>
   </div>
 
+</div>
+
+<!-- CONSOLE PANEL -->
+<div id="console-panel" class="console-collapsed">
+  <div id="console-header">
+    <span id="console-title">Console</span>
+    <span id="console-status"></span>
+    <button id="console-clear" title="Clear">✕</button>
+    <button id="console-toggle" title="Toggle console">▲</button>
+  </div>
+  <pre id="console-output"></pre>
 </div>
 
 <!-- STATUS BAR -->
@@ -119,6 +136,6 @@
   </div>
 </div>
 
-<script src="src/library.js"></script>
+<script type="module" src="src/main.js"></script>
 </body>
 </html>
